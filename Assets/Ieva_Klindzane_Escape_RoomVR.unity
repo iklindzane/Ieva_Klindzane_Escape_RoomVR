@@ -36345,6 +36345,7 @@ MonoBehaviour:
   drawerTransform: {fileID: 6253549085895767869}
   keySocket: {fileID: 6468828719331792293}
   isLocked: 1
+  limitDistances: {x: 0.05, y: 0.02, z: 0}
 --- !u!1 &7584415454804779342
 GameObject:
   m_ObjectHideFlags: 0
