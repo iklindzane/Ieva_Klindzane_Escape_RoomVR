@@ -1,41 +1,76 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class Drawer_My : MonoBehaviour
+public class Drawer_My : XRGrabInteractable
 {
-    [SerializeField] XRSocketInteractor keySocket; // Reference to the socket for the key
-    [SerializeField] bool isLocked = true; // Initialize the drawer as locked
+    [SerializeField] private Transform drawerTransform; 
+    [SerializeField] private XRSocketInteractor keySocket;
+    [SerializeField] private bool isLocked = true;
+
+    private Transform parentTransform;
+    private bool isGrabbed;
+
+    private const string defaultLayer = "Default";
+    private const string grabLayer = "Grab";
+    private bool isGrabbedd;
 
     void Start()
     {
-        // Check if keySocket is not null and add listener for when the key is inserted
         if (keySocket != null)
         {
-            keySocket.selectEntered.AddListener(OnDrawerUnlocked);
-            keySocket.selectExited.AddListener(OnDrawerUnlocked);
+            keySocket.selectEntered.AddListener(OnKeyInserted);
+            keySocket.selectExited.AddListener(OnKeyRemoved);
+        }
+
+        parentTransform = transform.parent;
+    }
+
+    private void OnKeyInserted(SelectEnterEventArgs arg0)
+    {
+        isLocked = false;  // Unlock the drawer
+        Debug.Log("****DRAWER Unlocked*****");
+    }
+
+    private void OnKeyRemoved(SelectExitEventArgs arg0)
+    {
+        isLocked = true; // Lock the drawer
+        Debug.Log("****DRAWER Locked*****");
+    }
+
+    protected override void OnSelectEntered(SelectEnterEventArgs args)
+    {
+        base.OnSelectEntered(args);
+
+        if (!isLocked)
+        {
+            transform.SetParent(parentTransform);
+            isGrabbed = true;
+
+            Debug.Log("Drawer is grabbed and active.");
+        }
+        else
+        {
+            Debug.Log("Drawer is locked and cannot be grabbed.");
         }
     }
 
-    private void OnDrawerUnlocked(SelectExitEventArgs arg0)
+    protected override void OnSelectExited(SelectExitEventArgs args)
     {
-        isLocked = true; // Unlock the drawer
-        Debug.Log("****DRAWER Locked*****");
-        // Additional logic for unlocking the drawer can be added here
+        base.OnSelectExited(args);
+        isGrabbed = false; 
+
+        Debug.Log("Drawer has been released.");
     }
 
-    private void OnDrawerUnlocked(SelectEnterEventArgs arg0)
+    void Update ()
     {
-        isLocked = false; // Unlock the drawer
-        Debug.Log("****DRAWER Unlocked*****");
-        // Additional logic for unlocking the drawer can be added here
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // Update logic can be implemented here if necessary
+        if (isGrabbed && drawerTransform != null) 
+        {
+           
+            drawerTransform.localPosition = new Vector3(drawerTransform.localPosition.x,
+                                                         drawerTransform.localPosition.y,
+                                                         transform.localPosition.z);
+        }
     }
 }
