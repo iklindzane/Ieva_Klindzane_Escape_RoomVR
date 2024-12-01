@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -6,6 +7,8 @@ public class Drawer_My : XRGrabInteractable
 {
     [SerializeField] private Transform drawerTransform;
     [SerializeField] private XRSocketInteractor keySocket;
+    [SerializeField] GameObject keyIndicatorLight;
+
     [SerializeField] private bool isLocked = true;
 
     private Transform parentTransform;
@@ -31,6 +34,10 @@ public class Drawer_My : XRGrabInteractable
     private void OnKeyInserted(SelectEnterEventArgs arg0)
     {
         isLocked = false;  // Unlock the drawer
+        if (keyIndicatorLight != null)
+        {
+            keyIndicatorLight.gameObject.SetActive(false);
+        }
         Debug.Log("****DRAWER Unlocked*****");
     }
 
