@@ -158,6 +158,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
+    Android: com.DefaultCompany.Ieva_Klindzane_Escape_RoomVR
     Standalone: com.Unity.Out-Of-Circulation
   buildNumber:
     Standalone: 0
